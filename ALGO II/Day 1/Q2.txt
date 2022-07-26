@@ -1,0 +1,83 @@
+class Solution {
+public:
+    pair<int,int> heighestValue(vector<int>& nums, int size) {
+        int low=0;
+        int high=size-1;
+        int mid;
+		
+        int val = nums[high];
+        int index = high;
+        
+        pair<int,int> p;
+        
+        if(size==2){
+            if(nums[low]>nums[high]){
+                return make_pair(nums[low],low);
+            }
+        }
+        
+        while(low<=high){
+            
+            mid = low + (high-low)/2;
+            
+            if(nums[low]>nums[high])
+            {
+                if(nums[mid]>nums[low]){
+                    low=mid;
+                    val=max(val,nums[mid]);
+                    if(val==nums[mid]){
+                        index=mid;
+                    }
+                }
+                else if(nums[mid]<nums[low]){
+                    high=mid-1;
+                    val=max(val,nums[low]);
+                    if(val==nums[low]){
+                        index=low;
+                    }
+                }
+                else {
+                    p.first = val;
+                    p.second = index;
+                    break;
+                }
+                
+            }
+            else {
+                p.first=nums[high];
+                p.second=high;
+                break;
+            }
+            
+        }
+		
+        return p;
+    }
+    
+    
+    int search(vector<int>& nums, int target) {
+        
+        pair<int,int> p = heighestValue(nums,nums.size());
+        
+        if(p.second==nums.size()-1){
+            if(target>p.first || target<nums[0]) return -1; 
+            if(target==nums[0]) return 0;
+        }
+        
+        //cout<<p.first<<" "<<p.second<<endl;
+        
+        int ind1 = lower_bound(nums.begin(), nums.begin()+p.second, target) - nums.begin();
+        int ind2 = lower_bound(nums.begin()+p.second+1, nums.end(), target) - nums.begin();
+        
+        if(ind1==nums.size()) ind1--;
+        if(ind2==nums.size()) ind2--;
+        
+        if(nums[ind1]==target){
+            return ind1;
+        }
+        else if(nums[ind2]==target){
+            return ind2;
+        }
+        return -1;
+    }
+};
